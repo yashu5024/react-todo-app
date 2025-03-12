@@ -2,19 +2,9 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
+/* App Header */
 .App-header {
-  background-color: #282c34;
+  background-color: #1e1e2f;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,15 +14,196 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+
+/* Global Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Main Container */
+.container {
+  max-width: 650px;
+  margin: 13px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+/* Input Container */
+.input-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  width: 450px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Input & Select Fields */
+.input-container input, 
+.input-container select {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #d1d1d1;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.input-container input:focus, 
+.input-container select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+}
+
+/* Buttons */
+button {
+  padding: 12px 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Add Task Button */
+.input-container button {
+  width: 100%;
+  max-width: 448px;
+  padding: 14px;
+  background-color: #3b155f;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.input-container button:hover {
+  background-color: #0e0516;
+}
+
+/* Search Bar */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-container input {
+  width: 100%;
+  max-width: 280px;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.search-container button {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+}
+
+.search-container button:hover {
+  background-color: #0056b3;
+}
+
+/* Table Styling */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 14px;
+  text-align: left;
+}
+
+th {
+  background-color: #899797;
+  color: white;
+  font-weight: bold;
+}
+
+/* Row Styling */
+.even {
+  background-color: #f9f9f9;
+}
+
+.odd {
+  background-color: #fff;
+}
+
+/* Action Buttons */
+.edit-btn {
+  background-color: #9b9b9b;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: #484849;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    max-width: 95%;
   }
-  to {
-    transform: rotate(360deg);
+
+  .input-container input, 
+  .input-container select, 
+  .input-container button, 
+  .search-container input {
+    max-width: 100%;
+  }
+
+  .input-container {
+    width: 90%;
+  }
+
+  table {
+    font-size: 14px;
   }
 }
