@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
-import "./App.css"; // Import the CSS file
+import "./App.css";
+import TodoTable from "./components/TodoTable";
+import TodoInput from "./components/TodoInput";
+import SearchBar from "./components/SearchBar";
+import DeleteConfirmation from "./components/DeleteConfirmation";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [newTodo, setNewTodo] = useState({ title: "", completed: false });
   const [searchTerm, setSearchTerm] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [flashMessage, setFlashMessage] = useState(null);
+
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/todos")
@@ -24,33 +32,63 @@ function App() {
 
   const handleAddTodo = () => {
     if (!newTodo.title) {
-      alert("Title is required!");
+      showFlashMessage("Title is required!", "error");
       return;
     }
-
-    const newId = todos.length > 0 ? todos[todos.length - 1].id + 1 : 1;
-    const updatedTodos = [...todos, { id: newId, ...newTodo }];
-    setTodos(updatedTodos);
-    setFilteredTodos(updatedTodos);
-    setNewTodo({ title: "", completed: false });
-  };
-
-  const handleDelete = (id) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
-    setFilteredTodos(updatedTodos);
-  };
-
-  const handleEdit = (id) => {
-    const newTitle = prompt("Enter new title:");
-    if (newTitle) {
+  
+    if (newTodo.id) {
       const updatedTodos = todos.map((todo) =>
-        todo.id === id ? { ...todo, title: newTitle } : todo
+        todo.id === newTodo.id ? newTodo : todo
       );
       setTodos(updatedTodos);
       setFilteredTodos(updatedTodos);
+      showFlashMessage("To-Do updated successfully!", "success");
+    } else {
+      const newId = todos.length > 0 ? todos[todos.length - 1].id + 1 : 1;
+      const updatedTodos = [...todos, { id: newId, ...newTodo }];
+      setTodos(updatedTodos);
+      setFilteredTodos(updatedTodos);
+      showFlashMessage("To-Do added successfully!", "success");
+    }
+  
+    setNewTodo({ title: "", completed: false });
+  };  
+  
+
+  const confirmDelete = (id) => {
+    console.log("Deleting ID:", id); // Debugging check
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+  
+
+  const handleDelete = () => {
+    if (deleteId) {
+      const updatedTodos = todos.filter((todo) => todo.id !== deleteId);
+      setTodos(updatedTodos);
+      setFilteredTodos(updatedTodos);
+      showFlashMessage("To-Do deleted successfully!", "success");
+    }
+    setShowDeleteModal(false);
+  };  
+
+  const showFlashMessage = (message, type = "success") => {
+    setFlashMessage({ message, type });
+  
+    // Hide message after 3 seconds
+    setTimeout(() => {
+      setFlashMessage(null);
+    }, 3000);
+  };
+  
+
+  const handleEdit = (id) => {
+    const todoToEdit = todos.find((todo) => todo.id === id);
+    if (todoToEdit) {
+      setNewTodo({ ...todoToEdit }); // Populate the input fields with existing data
     }
   };
+  
 
   const handleSearch = () => {
     const filtered = todos.filter((todo) =>
@@ -61,61 +99,18 @@ function App() {
 
   return (
     <div className="back-container">
-    <div className="container">
-      <h1>To-Do List</h1>
-
-      {/* Input Fields */}
-      <div className="input-container">
-        <input
-          type="text"
-          name="title"
-          placeholder="Enter Task Name"
-          value={newTodo.title}
-          onChange={handleInputChange}
-        />
-        <select name="completed" value={newTodo.completed} onChange={handleInputChange}>
-          <option value="false">❌ Not Completed</option>
-          <option value="true">✅ Completed</option>
-        </select>
-        <button onClick={handleAddTodo}>➕ Add Task</button>
-        <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search Task"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button onClick={handleSearch}>🔍 Search</button>
+      <div className="container">
+      {flashMessage && (
+  <div className={`flash-message ${flashMessage.type}`}>
+    {flashMessage.message}
+  </div>
+)}
+        <h1>To-Do List</h1>
+        <TodoInput newTodo={newTodo} handleInputChange={handleInputChange} handleAddTodo={handleAddTodo} />
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} />
       </div>
-      </div>
-      </div>
-
-      {/* Table */}
-      <div className="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {filteredTodos.map((todo, index) => (
-        <tr key={todo.id} className={index % 2 === 0 ? "even" : "odd"}>
-          <td>{todo.id}</td>
-          <td>{todo.title}</td>
-          <td>{todo.completed ? "✅ Completed" : "❌ Not Completed"}</td>
-          <td>
-            <button className="edit-btn" onClick={() => handleEdit(todo.id)}>✏️ Edit</button>
-            <button className="delete-btn" onClick={() => handleDelete(todo.id)}>🗑 Delete</button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+      <TodoTable todos={filteredTodos} handleEdit={handleEdit} confirmDelete={confirmDelete} />
+      <DeleteConfirmation show={showDeleteModal} onCancel={() => setShowDeleteModal(false)} onConfirm={handleDelete} />
     </div>
   );
 }
